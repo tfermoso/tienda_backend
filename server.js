@@ -38,6 +38,12 @@ app.get("/", (req, res) => {
     //res.send("hola");
 })
 app.post("/pagar",(req,res)=>{
+    let total=0;
+    req.body.carrito.map(p=>total+=p.cantidad*p.precio);
+
+    let consulta=`insert into tblventas (Fecha,correo,total,status)"+
+    "values (now(),?,${total},'pendiente')`;
+    
     console.log(req.body);
     
     res.send(JSON.stringify({"resp":"ok"}));
