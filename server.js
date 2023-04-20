@@ -1,6 +1,6 @@
 const express = require("express");
-const cors=require("cors")
-const mysql=require("mysql");
+const cors = require("cors")
+const mysql = require("mysql");
 const bodyParser = require("body-parser");
 
 
@@ -14,22 +14,22 @@ const connection = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'tiendapaypal'
-  });
-  const a=(parametro)=>{
-    if(parametro){
+});
+const a = (parametro) => {
+    if (parametro) {
         console.log(parametro)
         return;
     }
     console.log("Conexión establecida");
-  }
-  connection.connect(a);
+}
+connection.connect(a);
 
 app.get("/", (req, res) => {
-    connection.query("select * from tblproductos",(err,resultado,campos)=>{
-        if(err){
+    connection.query("select * from tblproductos", (err, resultado, campos) => {
+        if (err) {
             console.log(err);
-            let response={
-                error:err
+            let response = {
+                error: err
             }
             res.send(JSON.stringify(response));
         }
@@ -37,16 +37,20 @@ app.get("/", (req, res) => {
     })
     //res.send("hola");
 })
-app.post("/pagar",(req,res)=>{
-    let total=0;
-    req.body.carrito.map(p=>total+=p.cantidad*p.precio);
+app.post("/pagar", (req, res) => {
+    let total = 0;
+    req.body.carrito.map(p => total += p.cantidad * p.precio);
 
-    let consulta=`insert into tblventas (Fecha,correo,total,status)"+
+    let consulta = `insert into tblventas (Fecha,correo,total,status)"+
     "values (now(),?,${total},'pendiente')`;
-    
+    let statement = connection.prepare(consulta);
+    statement.execute([req.body.email], () => {
+        if (err) throw err;
+        console.log('Se insertaron ' + result.affectedRows + ' filas');
+    })
     console.log(req.body);
-    
-    res.send(JSON.stringify({"resp":"ok"}));
+
+    res.send(JSON.stringify({ "resp": "ok" }));
 })
 
 
