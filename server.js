@@ -1,9 +1,14 @@
 const express = require("express");
 const cors=require("cors")
 const mysql=require("mysql");
+const bodyParser = require("body-parser");
+
 
 const app = express();
 app.use(cors());
+// Configura body-parser como middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -31,6 +36,11 @@ app.get("/", (req, res) => {
         res.send(JSON.stringify(resultado))
     })
     //res.send("hola");
+})
+app.post("/pagar",(req,res)=>{
+    console.log(req.body);
+    
+    res.send(JSON.stringify({"resp":"ok"}));
 })
 
 
