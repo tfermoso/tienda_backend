@@ -41,10 +41,9 @@ app.post("/pagar", (req, res) => {
     let total = 0;
     req.body.carrito.map(p => total += p.cantidad * p.precio);
 
-    let consulta = `insert into tblventas (Fecha,correo,total,status)"+
-    "values (now(),?,${total},'pendiente')`;
-    let statement = connection.prepare(consulta);
-    statement.execute([req.body.email], () => {
+    let consulta = `insert into tblventas (Fecha,Correo,Total,Status) 
+    values (now(),?,${total},'pendiente')`;
+    let statement = connection.query(consulta,[req.body.email], (err, result) => {
         if (err) throw err;
         console.log('Se insertaron ' + result.affectedRows + ' filas');
     })
