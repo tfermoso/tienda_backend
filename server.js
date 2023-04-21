@@ -37,6 +37,10 @@ app.get("/", (req, res) => {
     })
     //res.send("hola");
 })
+app.post("/confirmarpago",(req,res)=>{
+    console.log(req.body);
+    res.send(JSON.stringify({'resp':'ok'}))
+})
 app.post("/pagar", (req, res) => {
     let total = 0;
     req.body.carrito.map(p => total += p.cantidad * p.precio);
