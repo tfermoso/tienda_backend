@@ -43,14 +43,26 @@ app.post("/pagar", (req, res) => {
 
     let consulta = `insert into tblventas (Fecha,Correo,Total,Status) 
     values (now(),?,${total},'pendiente')`;
-    let statement = connection.query(consulta,[req.body.email], (err, result) => {
+    let statement = connection.query(consulta, [req.body.email], (err, result) => {
         if (err) throw err;
-        console.log('Se insertaron ' + result.affectedRows + ' filas '+result.insertId );
-    
-    })
-    console.log(req.body);
+        console.log('Se insertaron ' + result.affectedRows + ' filas ' + result.insertId);
+        //Insertamos el detalle de la venta
+        let insertDetalle = "insert into tblDetalleVenta (IDVenta,IDProducto,Precio,Cantidad,Descargado) values ";
+        let detalle = "";
+        req.body.carrito.map(p => detalle += `(${result.insertId},${p.id},${p.precio},${p.cantidad},0),`);
+        detalle = detalle.substring(0, cadena.length - 1);
+        connection.query(insertDetalle + detalle, [], (err, result) => {
+            if (err) {
+                console.log(err);
+            } else
+                console.log('Se insertaron ' + result.affectedRows + ' filas ');
+                res.send(JSON.stringify({ "resp":result.insertId}));
+        })
 
-    res.send(JSON.stringify({ "resp": "ok" }));
+    })
+    
+
+    
 })
 
 
