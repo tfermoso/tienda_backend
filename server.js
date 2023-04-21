@@ -46,6 +46,7 @@ app.post("/pagar", (req, res) => {
     let statement = connection.query(consulta,[req.body.email], (err, result) => {
         if (err) throw err;
         console.log('Se insertaron ' + result.affectedRows + ' filas '+result.insertId );
+    
     })
     console.log(req.body);
 
